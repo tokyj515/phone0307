@@ -1,0 +1,84 @@
+server:
+  port: 8088
+
+---
+
+spring:
+  profiles: default
+  cloud:
+    gateway:
+#<<< API Gateway / Routes
+      routes:
+        - id: lostreport
+          uri: http://localhost:8082
+          predicates:
+            - Path=/lostReports/**, 
+        - id: insurance
+          uri: http://localhost:8083
+          predicates:
+            - Path=/insurances/**, 
+        - id: notification
+          uri: http://localhost:8084
+          predicates:
+            - Path=/notificationHistories/**, 
+        - id: mobile
+          uri: http://localhost:8085
+          predicates:
+            - Path=/blockDevices/**, /restrictNetworks/**, 
+        - id: frontend
+          uri: http://localhost:8080
+          predicates:
+            - Path=/**
+#>>> API Gateway / Routes
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins:
+              - "*"
+            allowedMethods:
+              - "*"
+            allowedHeaders:
+              - "*"
+            allowCredentials: true
+
+
+---
+
+spring:
+  profiles: docker
+  cloud:
+    gateway:
+      routes:
+        - id: lostreport
+          uri: http://lostreport:8080
+          predicates:
+            - Path=/lostReports/**, 
+        - id: insurance
+          uri: http://insurance:8080
+          predicates:
+            - Path=/insurances/**, 
+        - id: notification
+          uri: http://notification:8080
+          predicates:
+            - Path=/notificationHistories/**, 
+        - id: mobile
+          uri: http://mobile:8080
+          predicates:
+            - Path=/blockDevices/**, /restrictNetworks/**, 
+        - id: frontend
+          uri: http://frontend:8080
+          predicates:
+            - Path=/**
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins:
+              - "*"
+            allowedMethods:
+              - "*"
+            allowedHeaders:
+              - "*"
+            allowCredentials: true
+
+server:
+  port: 8080
